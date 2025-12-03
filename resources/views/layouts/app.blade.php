@@ -8,6 +8,9 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 <link rel="icon" href="{{ asset('favicon.ico') }}">
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -18,7 +21,7 @@
     </head>
 
 
-    <body class="font-sans antialiased">
+    <body class="font-albert antialiased ">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-100">
             @include('layouts.navigation')
 
@@ -34,7 +37,20 @@
             <!-- Page Content -->
             <main>
                 {{ $slot }}
+               
             </main>
         </div>
+
+
+         @stack('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
+     <!-- FilePond Plugins -->
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+
+    <!-- FilePond JS -->
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
     </body>
+
+    
 </html>

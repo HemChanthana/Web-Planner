@@ -48,6 +48,12 @@ class User extends Authenticatable
         return $this->hasMany(Task::class)->whereNotNull('parent_id');
     }
 
+    public function hashtags()
+{
+    return $this->hasMany(Hashtag::class);
+}
+
+
     // ROLES -------------------------------------------
 
     public function isAdmin()

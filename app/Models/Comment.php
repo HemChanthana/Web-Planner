@@ -2,19 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TaskFile extends Model
+class Comment extends Model
 {
-    /** @use HasFactory<\Database\Factories\TaskFileFactory> */
-    use HasFactory;
-
-
-
+    
     protected $fillable = [
         'task_id',
-        'file_path',
+        'user_id',
+        'comment',
+        'created_at', 
+         'updated_at'
     ];
 
     public function task()
@@ -22,10 +20,8 @@ class TaskFile extends Model
         return $this->belongsTo(Task::class);
     }
 
-
-    
-    
-
-    
-
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
