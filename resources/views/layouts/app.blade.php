@@ -10,6 +10,7 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
      <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+           <link href="https://fonts.bunny.net/css?family=albert-sans:300" rel="stylesheet" />
 
 
         <!-- Fonts -->

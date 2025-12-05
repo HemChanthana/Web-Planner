@@ -20,7 +20,7 @@
                       <!-- My Projects -->
     <x-nav-link 
         
-        :active="request()->routeIs('projects.*')" 
+:href="route('tasks.index')" :active="request()->routeIs('tasks.index')"
         class="!text-gray-900"
     >
         {{ __('My Projects') }}

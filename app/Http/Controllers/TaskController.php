@@ -8,14 +8,110 @@ use App\Models\Comment;
 use App\Models\TaskFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\Auth;
 class TaskController extends Controller
 {
+
+
+
+
+
+  
+
+
     public function index()
     {
-        $task = Task::get();
-        return view('tasks.index', compact('task'));
+          $tasks = Task::where('user_id', Auth::id())->get();
+          
+    $hashtags = Hashtag::where('user_id', Auth::id())->get();
+
+
+    return view('tasks.index', compact('tasks',"hashtags"));
     }
+
+
+    // public fucnction show(Request $request)
+    // {
+    //     $task = Task::find($request->id);
+    //     return view('tasks.show', data: compact('task'));
+    // }
+ public function update(Request $request, Task $task)
+{
+    // Ensure user owns the task
+    if ($task->user_id !== Auth::id()) {
+        abort(403, 'Unauthorized action.');
+    }
+
+    // Validate request
+    $request->validate([
+        'title'        => 'required|max:255',
+        'description'  => 'nullable|string',
+        'priority'     => 'required|in:Low,Normal,High',
+        'end_date'     => 'nullable|date',
+
+        'hashtags'     => 'nullable|array',
+        'hashtags.*'   => 'integer',
+
+        'new_hashtag'  => 'nullable|string|max:50',
+        'comment'      => 'nullable|string|max:500',
+
+        'file'         => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:20480',
+    ]);
+
+    // Update task fields
+    $task->update([
+        'title'       => $request->title,
+        'description' => $request->description,
+        'priority'    => $request->priority,
+        'end_date'    => $request->end_date,
+    ]);
+
+    // === HASHTAGS ===
+    if ($request->hashtags) {
+        $task->hashtags()->sync($request->hashtags);
+    } else {
+        $task->hashtags()->detach();
+    }
+
+    // Add new hashtag
+    if ($request->new_hashtag) {
+        $hashtag = Hashtag::firstOrCreate([
+            'user_id' => Auth::id(),
+            'name'    => $request->new_hashtag,
+        ]);
+        $task->hashtags()->attach($hashtag->id);
+    }
+
+    // === COMMENT ===
+    if ($request->comment) {
+        $task->comments()->create([
+            'user_id' => Auth::id(),
+            'comment' => $request->comment,
+        ]);
+    }
+
+    // === FILE REPLACEMENT ===
+    if ($request->hasFile('file')) {
+
+        // Delete old file(s)
+        if ($task->files->count() > 0) {
+            foreach ($task->files as $oldFile) {
+                Storage::disk('public')->delete($oldFile->file_path);
+                $oldFile->delete();
+            }
+        }
+
+        // Save new file
+        $path = $request->file('file')->store('task_files', 'public');
+        $task->files()->create([
+            'file_path' => $path,
+        ]);
+    }
+
+    // Redirect back with success message
+    return redirect()->back()->with('success', 'Task updated successfully!');
+}
+
 
     public function store(Request $request)
     {
@@ -59,7 +155,7 @@ class TaskController extends Controller
             $task->hashtags()->attach($hashtag->id);
         }
 
-        // Add comment
+
         if ($request->comment) {
             $task->comments()->create([
                 'user_id' => auth()->id(),
@@ -67,7 +163,7 @@ class TaskController extends Controller
             ]);
         }
 
-        // Handle File Upload (NORMAL FILE UPLOAD)
+
         if ($request->hasFile('file')) {
 
             $path = $request->file('file')->store('task_files', 'public');
@@ -77,6 +173,6 @@ class TaskController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Task created successfully!');
+        return back()->with('success',  'Task created successfully!');
     }
 }

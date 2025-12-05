@@ -101,9 +101,16 @@
 
                         <div class="flex justify-end gap-3">
                             <button type="button" @click="open = false" class="px-4 py-2 bg-gray-200 rounded-lg">Cancel</button>
-                            <button class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700">
+                            <button data-popover-target="popover-offset" data-popover-offset="30" class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700">
                                 Save Task
                             </button>
+
+
+
+
+                          </div>
+                           
+
                         </div>
 
                     </form>
@@ -111,6 +118,14 @@
                 </div>
             </div>
         </div>
+
+
+                            @if (session('success'))
+<div class="absolute top-5 right-5 bg-white border p-3 rounded-lg shadow">
+    {{ session('success') }}
+</div>
+@endif
+
     </div>
 
     @push('scripts')
@@ -125,7 +140,13 @@
       FilePond.create(document.querySelector('#filepond'), {
     allowMultiple: false,
     maxFileSize: '20mb',
-    acceptedFileTypes: ['image/*', 'application/pdf'],
+  acceptedFileTypes: [
+    'image/*',
+    'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/msword'
+],
+
 
     // REQUIRED: Make FilePond submit the actual file in the form
     storeAsFile: true,    
@@ -137,5 +158,14 @@
     });
     </script>
     @endpush
+
+    <script>
+    setTimeout(() => {
+        const successAlert = document.querySelector('.absolute.top-5.right-5');
+        if (successAlert) {
+            successAlert.remove();
+        }
+    }, 3000);
+    </script>
 
 </x-app-layout>
