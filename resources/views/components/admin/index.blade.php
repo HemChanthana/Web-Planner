@@ -46,7 +46,7 @@
 
 
 
-        {{-- CHART PLACEHOLDER --}}
+
         <div class="bg-white p-6 rounded-xl shadow-md">
             <h3 class="font-semibold mb-3">Monthly Task Overview</h3>
             <div class="h-48 flex items-center justify-center text-gray-400">
@@ -54,8 +54,18 @@
             </div>
         </div>
 
+          <div class="bg-white p-6 rounded-xl shadow-md mt-6">
+    <h3 class="font-semibold mb-3">Monthly New Users</h3>
+    <div class="h-48 flex items-center justify-center text-gray-400">
+        <canvas id="usersChart" class="w-full h-48"></canvas>
+    </div>
+</div>
 
-        {{-- RECENT TASKS TABLE --}}
+
+
+
+
+    {{-- -Tasks table  --}}
         <div class="bg-white p-6 rounded-xl shadow-md">
             <h3 class="font-semibold mb-3">Recent Tasks</h3>
 
@@ -88,33 +98,59 @@
 
         </div>
 
-        <script>
 
+      <script>
+const ctx = document.getElementById('tasksChart').getContext('2d');
 
-  const ctx = document.getElementById('tasksChart').getContext('2d');
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-            datasets: [{
-                label: 'Tasks',
-                data: @json($monthlyTasks),
-                backgroundColor: 'rgba(59, 130, 246, 0.5)',  // blue
-                borderColor: 'rgb(59, 130, 246)',
-                borderWidth: 1,
-                borderRadius: 10,
-                borderSkipped: false
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: { beginAtZero: true }
-            }
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        datasets: [{
+            label: 'Tasks',
+            data: @json($monthlyTasks),
+            backgroundColor: 'rgba(59, 130, 246, 0.5)',
+            borderColor: 'rgb(59, 130, 246)',
+            borderWidth: 1,
+            borderRadius: 10,
+            borderSkipped: false
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true }
         }
-    });
-        </script>
+    }
+});
+</script>
+
+<script>
+const usersCtx = document.getElementById('usersChart').getContext('2d');
+
+new Chart(usersCtx, {
+    type: 'line',
+    data: {
+        labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        datasets: [{
+            label: 'New Users',
+            data: @json($monthlyUsers),
+            borderColor: 'rgb(34, 197, 94)',
+            backgroundColor: 'rgba(34, 197, 94, 0.3)',
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+
 
     </div>
 

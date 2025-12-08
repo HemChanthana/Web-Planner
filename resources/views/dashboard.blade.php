@@ -8,7 +8,7 @@
         </div>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-2">w
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-2">
         <div x-data="{ open: false }">
 
             <!-- Create Task Button -->
@@ -20,6 +20,45 @@
                     <path stroke="currentColor" stroke-width="2" d="M5 12h14m-7 7V5"/>
                 </svg>
             </button>
+
+
+         <div class="mt-6">
+    <h3 class="text-lg font-semibold mb-3">Recent Tasks</h3>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        
+        @foreach ($recentTasks as $task)
+        <div class="p-4 bg-blue-100 border rounded-xl shadow-sm">
+            <h4 class="font-semibold text-gray-900">{{ $task->title }}</h4>
+
+            <p class="text-gray-600 text-sm mt-1">
+                {{ Str::limit($task->description, 100) }}
+            </p>
+        </div>
+        @endforeach
+
+        @if ($recentTasks->isEmpty())
+            <p class="text-gray-500 italic">No tasks yet.</p>
+        @endif
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             <!-- Modal -->
             <div 

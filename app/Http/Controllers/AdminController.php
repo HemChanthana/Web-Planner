@@ -11,12 +11,17 @@ class AdminController extends Controller
 {
     public function index()
     {
-        // monthly tasks: count tasks per month for the current year
+    
         $monthlyTasks = [];
+        $monthlyUsers = [];
+        
         $year = now()->year;
 
         for ($m = 1; $m <= 12; $m++) {
             $monthlyTasks[] = Task::whereYear('created_at', $year)
+                                  ->whereMonth('created_at', $m)
+                                  ->count();
+            $monthlyUsers[] = User::whereYear('created_at', $year)
                                   ->whereMonth('created_at', $m)
                                   ->count();
         }
@@ -28,6 +33,7 @@ class AdminController extends Controller
             'pendingTasks' => Task::where('status', 'pending')->count(),
             'recentTasks' => Task::latest()->take(5)->get(),
             'monthlyTasks' => $monthlyTasks,  
+            'monthlyUsers' => $monthlyUsers,
         ]);
     }
 
@@ -47,6 +53,14 @@ class AdminController extends Controller
         return view('components.admin.user-controll', compact('users'));
     }
 
+    public function deleteUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('admin.users')->with('success', 'User deleted successfully.');
+    }
+
 
 
     // public function editUser($id)
@@ -60,22 +74,31 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'role' => 'required|in:user,admin',
-        ]);
+    $request->validate([
+        'name'   => 'required|string|max:255',
+        'email'  => 'required|email|unique:users,email,' . $user->id,
+        'role'   => 'required|in:user,admin',
+        'address' => 'nullable|string|max:255',
+        'phone'   => 'nullable|string|max:20',
+    ]);
 
-        $user->update($request->only('name', 'email', 'role'));
+    $user->update([
+        'name'    => $request->name,
+        'email'   => $request->email,
+        'role'    => $request->role,
+        'address' => $request->address,
+        'phone'   => $request->phone,
+    ]);
 
-        return redirect()->route('admin.users')->with('success', 'User updated successfully.');
+    return redirect()->route('admin.users')->with('success', 'User updated successfully.');
+
     }   
 
     public function ViewAllTask()
     {
          $tasks = Task::query();
 
-        $tasks = $tasks->paginate(6);
+     $tasks = Task::with('user')->paginate(6);
         return view('components.admin.task-controll', compact('tasks'));
     }
 }
