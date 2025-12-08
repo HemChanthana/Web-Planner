@@ -13,21 +13,33 @@ class TaskController extends Controller
 {
 
 
-
+// need try catch for error hanndling , after test all 
 
 
   
-
-
-    public function index()
-    {
-          $tasks = Task::where('user_id', Auth::id())->get();
-          
+public function index()
+{
+    $tasks = Task::where('user_id', Auth::id())->get();
     $hashtags = Hashtag::where('user_id', Auth::id())->get();
 
+    $taskIds = $tasks->pluck('id');
+      $comments = Comment::whereIn('task_id', $taskIds)->get();
+    return view('tasks.index', compact('tasks', 'hashtags',"comments"))
+           ->with('results', null); // ensures Blade sees a variable
+}
 
-    return view('tasks.index', compact('tasks',"hashtags"));
+
+public  function Destroy(Task $task){
+
+    $user_id = Auth::id();
+
+    if ($task->$user_id !== Auth::id()) {
+        abort(403, 'Unauthorized action.');
+    }   else{
+        $task->delete();
+        return redirect()->back()->with('success', 'Task deleted successfully!');
     }
+}
 
 
     // public fucnction show(Request $request)
@@ -48,6 +60,7 @@ class TaskController extends Controller
         'description'  => 'nullable|string',
         'priority'     => 'required|in:Low,Normal,High',
         'end_date'     => 'nullable|date',
+        'status'      => 'nullable|in:pending,in-progress,done',
 
         'hashtags'     => 'nullable|array',
         'hashtags.*'   => 'integer',
@@ -62,6 +75,7 @@ class TaskController extends Controller
     $task->update([
         'title'       => $request->title,
         'description' => $request->description,
+        'status'      => $request->status,
         'priority'    => $request->priority,
         'end_date'    => $request->end_date,
     ]);
@@ -90,7 +104,7 @@ class TaskController extends Controller
         ]);
     }
 
-    // === FILE REPLACEMENT ===
+    // === replace file cod e ===
     if ($request->hasFile('file')) {
 
         // Delete old file(s)
@@ -108,7 +122,7 @@ class TaskController extends Controller
         ]);
     }
 
-    // Redirect back with success message
+    // Redirect back with success message and display it kl
     return redirect()->back()->with('success', 'Task updated successfully!');
 }
 
@@ -175,4 +189,21 @@ class TaskController extends Controller
 
         return back()->with('success',  'Task created successfully!');
     }
+public function search(Request $request)
+{
+    $search = $request->input('search');
+    $user_id = Auth::id();
+
+    $results = Task::where('user_id', $user_id)
+                   ->where('title', 'like', "%{$search}%")
+                   ->get();
+
+    $hashtags = Hashtag::where("user_id", $user_id)->get();
+
+    return view('tasks.index', compact('results', 'hashtags'))
+           ->with('tasks', [])    // hide default tasks
+           ->with('search', $search);
+}
+
+
 }

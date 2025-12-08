@@ -24,8 +24,8 @@
         <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
             @if (Route::has('login'))
                 <nav class="flex items-center justify-end gap-4">
-                    <a href="#">
-                        <svg class="w-8 h-8 fill-current text-gray-500" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>
+                    <a href="{{ url ("/") }}">
+ <x-application-logo class="block h-9 w-auto text-gray-900" />
                     </a>
 
                     @auth

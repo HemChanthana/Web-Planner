@@ -6,7 +6,7 @@
     <p class="text-gray-600 mb-4">{{ Str::limit($task->description, 120, '...') }}</p>
 
     <button @click="open = true"
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            class="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
         Read More
     </button>
 
@@ -41,6 +41,18 @@
                     <label class="font-semibold">Description</label>
                     <textarea name="description" class="w-full border rounded p-2" rows="3">{{ $task->description }}</textarea>
                 </div>
+
+                <div class="mb-4">
+    <label class="font-semibold">Status</label>
+    <select name="status" class="w-full p-2 border rounded">
+        <option value="pending"      {{ $task->status === 'pending' ? 'selected' : '' }}>Pending</option>
+        <option value="in-progress"  {{ $task->status === 'in-progress' ? 'selected' : '' }}>In Progress</option>
+        <option value="done"         {{ $task->status === 'done' ? 'selected' : '' }}>Done</option>
+    </select>
+</div>
+
+
+
 
                 {{-- PRIORITY --}}
                 <div class="mb-4">
@@ -80,7 +92,14 @@
                 {{-- COMMENT --}}
                 <div class="mb-4">
                     <label class="font-semibold">Add Comment</label>
-                    <textarea name="comment" class="w-full border rounded p-2" rows="2"></textarea>
+                  <textarea name="comment" rows="5" class="w-full p-2 border rounded">
+@foreach ($task->comments as $c)
+{{ $c->user->name }}: {{ $c->comment }} ({{ $c->created_at->diffForHumans() }})
+
+@endforeach
+</textarea>
+
+
                 </div>
 
                 {{-- FILE PREVIEW --}}

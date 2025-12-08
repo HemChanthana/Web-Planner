@@ -11,11 +11,26 @@
                     </a>
                 </div>
 
+                @if (Auth::user() && Auth::user()->role === 'admin')
+    <!-- Admin Dashboard Link -->
+    <x-nav-link 
+        :href="route('admin.dashboard')" 
+        :active="request()->routeIs('admin.dashboard')"
+        class="!text-gray-900"
+    >
+        {{ __('Management') }}
+    </x-nav-link>
+@endif
+
+
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="!text-gray-900">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+
+                 
 
                       <!-- My Projects -->
     <x-nav-link 

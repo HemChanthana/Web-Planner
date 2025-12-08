@@ -8,7 +8,7 @@
         </div>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-2">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-2">w
         <div x-data="{ open: false }">
 
             <!-- Create Task Button -->
@@ -85,7 +85,9 @@
                         <!-- Comment -->
                         <div class="mb-4">
                             <label class="block font-semibold">Comment</label>
+                            
                             <textarea name="comment" class="w-full p-3 border rounded-lg" rows="2"></textarea>
+                           
                         </div>
 
                         <!-- File Upload -->

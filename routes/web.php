@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
 Route::get('/', function () {
@@ -22,11 +24,21 @@ Route::middleware('auth')->group(function () {
 
 
 
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/users', [AdminController::class, 'viewAllUser'])->name('admin.users');
+    Route::get('admin/users/task',[AdminController::class, 'ViewAllTask'] )->name('admin.users.task');
+});
+
+
+
+
 Route::middleware(['auth'])->group(function () {
 
-   Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-   Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
 Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+Route::get('/tasks/search', [TaskController::class, 'search'])->name('tasks.search');
 
 //    Route::post('/tasks', [TaskController::class, 'show'])->name('tasks.store');
 
