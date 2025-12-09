@@ -29,11 +29,59 @@
         
         @foreach ($recentTasks as $task)
         <div class="p-4 bg-blue-100 border rounded-xl shadow-sm">
-            <h4 class="font-semibold text-gray-900">{{ $task->title }}</h4>
 
-            <p class="text-gray-600 text-sm mt-1">
+            
+
+            
+<div class="mb-2 flex items-center gap-3"
+     x-data="{ completed: {{ $task->status === 'done' ? 'true' : 'false' }} }">
+
+    <!-- Checkbox -->
+    <button 
+
+    @click="
+        completed = !completed;
+        fetch('{{ route('tasks.toggle', $task->id) }}', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+        });
+    "
+        class="w-6 h-6 flex items-center justify-center rounded-full border transition"
+        :class="completed 
+            ? 'bg-blue-600 border-blue-600' 
+            : 'border-gray-400'"
+    >
+        <svg x-show="completed" xmlns="http://www.w3.org/2000/svg" 
+             class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+        </svg>
+    </button>
+
+    <!-- Title -->
+    <div>
+        <label class="text-gray-400">Title</label>
+        <h4 class="font-semibold text-gray-900"
+        :class="completed ? 'line-through text-gray-500' : ''"
+        
+        >{{ $task->title }}</h4>
+    </div>
+
+</div>
+
+
+<label class="text-gray-400"> Description </label>
+            <p class="text-gray-900 font-semibold text-sm mt-1">
                 {{ Str::limit($task->description, 100) }}
             </p>
+          <div class="mt-2 flex gap-7 flex-row items-center">
+                <p class="text-gray-900 text-sm  mtt-1 font-light ">
+                <span class="bg-yellow-200"> 
+                    {{ '#' . $hashtags->whereIn('id', $task->hashtags->pluck('id'))->pluck('name')->join(',#') }}
+                </span>
+                </p>
+               <a href="{{ route("tasks.index") }}"> <button class="bg-sky-600 text-sm text-white rounded-lg  hover:bg-sky-700 transition">View Details</button></a>
+          </div>
+            
         </div>
         @endforeach
 

@@ -32,11 +32,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/users/tasks',[AdminController::class, 'ViewAllTask'] )->name('admin.users.task');
 
     Route::put('/admin/users/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
-    
+
     Route::delete('/admin/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
 });
 
 
+
+Route::post('/tasks/{task}/toggle', [TaskController::class, 'toggleStatus'])
+     ->name('tasks.toggle');
+
+
+
+    
 
 
 Route::middleware(['auth'])->group(function () {

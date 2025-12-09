@@ -6,6 +6,7 @@ use App\Models\Task;
 use App\Models\Hashtag;
 use App\Models\Comment;
 use App\Models\TaskFile;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -13,20 +14,53 @@ class TaskController extends Controller
 {
 
 
-// need try catch for error hanndling , after test all 
-
 
   
-public function index()
+public function index(Request $request)
 {
     $tasks = Task::where('user_id', Auth::id())->get();
     $hashtags = Hashtag::where('user_id', Auth::id())->get();
 
+
+    $sortQuery = $request->query('sort'); // day, month, year
+    $query = Task::where('user_id', Auth::id());
+
+
     $taskIds = $tasks->pluck('id');
       $comments = Comment::whereIn('task_id', $taskIds)->get();
+
+
+      if ($sortQuery === 'day') {
+        $query->whereDate('created_at', Carbon::today());
+    }
+
+    if ($sortQuery === 'month') {
+        $query->whereMonth('created_at', Carbon::now()->month)
+              ->whereYear('created_at', Carbon::now()->year);
+    }
+
+    if ($sortQuery === 'year') {
+        $query->whereYear('created_at', Carbon::now()->year);
+    }
+
+    // Final task list after filters
+    $tasks = $query->get();
+
+
     return view('tasks.index', compact('tasks', 'hashtags',"comments"))
            ->with('results', null); // ensures Blade sees a variable
 }
+
+
+public function toggleStatus(Task $task)
+{
+    $task->status = $task->status === 'done' ? 'pending' : 'done';
+    $task->save();
+
+    return response()->json(['status' => $task->status]);
+}
+
+
 
 
 public  function Destroy(Task $task){
@@ -71,7 +105,6 @@ public  function Destroy(Task $task){
         'file'         => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:20480',
     ]);
 
-    // Update task fields
     $task->update([
         'title'       => $request->title,
         'description' => $request->description,

@@ -26,7 +26,7 @@
                 <nav class="flex items-center justify-end gap-4">
                     <a href="{{ url ("/") }}">
  <x-application-logo class="block h-9 w-auto text-gray-900" />
-                    </a>
+                    </a>w
 
                     @auth
                         <a href="{{ url('/dashboard') }}" class="inline-block px-5 py-1.5 text-[#1b1b18] border-[#19140035] hover:border-[#1915014a] border rounded-sm text-sm leading-normal">
