@@ -6,14 +6,12 @@
         <form action="{{ route('tasks.search') }}" method="GET">
         <input type="text" name="search" placeholder="Search Tasks"
                value="{{ $search ?? '' }}">
-        <button type="submit" class="bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Search</button>
-       
+
+       <button type="submit" class="text-body  border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary-soft shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Search</button>
       
     </form>
      </div>
     </x-slot>
-
-
 
 
 

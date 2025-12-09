@@ -49,17 +49,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
             <!-- Modal -->
             <div 
                 x-show="open"
