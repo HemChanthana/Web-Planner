@@ -22,12 +22,17 @@
             </button>
 
 
+                <!-- display tasks -->
          <div class="mt-6">
     <h3 class="text-lg font-semibold mb-3">Recent Tasks</h3>
+
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         
         @foreach ($recentTasks as $task)
+
+
+        <!-- Task Card Component -->
         <div class="p-4 bg-blue-100 border rounded-xl shadow-sm">
 
             
@@ -36,7 +41,7 @@
 <div class="mb-2 flex items-center gap-3"
      x-data="{ completed: {{ $task->status === 'done' ? 'true' : 'false' }} }">
 
-    <!-- Checkbox -->
+    <!-- Checkbox of each modals  -->
     <button 
 
     @click="
@@ -57,7 +62,7 @@
         </svg>
     </button>
 
-    <!-- Title -->
+    <!-- Title of modals  -->
     <div>
         <label class="text-gray-400">Title</label>
         <h4 class="font-semibold text-gray-900"

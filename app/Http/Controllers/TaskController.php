@@ -18,37 +18,45 @@ class TaskController extends Controller
   
 public function index(Request $request)
 {
-    $tasks = Task::where('user_id', Auth::id())->get();
-    $hashtags = Hashtag::where('user_id', Auth::id())->get();
 
+    $userId = Auth::id();
 
-    $sortQuery = $request->query('sort'); // day, month, year
-    $query = Task::where('user_id', Auth::id());
+    $hashtags = Hashtag::where('user_id', $userId)->get();
 
+    // Base query
+    $query = Task::where('user_id', $userId);
 
-    $taskIds = $tasks->pluck('id');
-      $comments = Comment::whereIn('task_id', $taskIds)->get();
-
-
-      if ($sortQuery === 'day') {
+    // Sorting filters
+    if ($request->sort === 'day') {
         $query->whereDate('created_at', Carbon::today());
     }
 
-    if ($sortQuery === 'month') {
-        $query->whereMonth('created_at', Carbon::now()->month)
-              ->whereYear('created_at', Carbon::now()->year);
+    if ($request->sort === 'month') {
+        $query->whereMonth('created_at', now()->month)
+              ->whereYear('created_at', now()->year);
     }
 
-    if ($sortQuery === 'year') {
-        $query->whereYear('created_at', Carbon::now()->year);
+    if ($request->sort === 'year') {
+        $query->whereYear('created_at', now()->year);
     }
 
-    // Final task list after filters
-    $tasks = $query->get();
+    // Clone before pagination
+    $allTasks = (clone $query)->get();
 
+    // Paginated tasks
+    $tasks = $query->orderBy('created_at', 'desc')->paginate(10);
 
-    return view('tasks.index', compact('tasks', 'hashtags',"comments"))
-           ->with('results', null); // ensures Blade sees a variable
+    // Comments only for visible tasks
+    $comments = Comment::whereIn('task_id', $tasks->pluck('id'))->get();
+
+    return view('tasks.index', [
+        'tasks'     => $tasks,
+        'allTasks'  => $allTasks,
+        'hashtags'  => $hashtags,
+        'comments'  => $comments,
+        'results'   => null,      // no search results yet
+        'search'    => null
+    ]);
 }
 
 
@@ -225,18 +233,30 @@ public  function Destroy(Task $task){
 public function search(Request $request)
 {
     $search = $request->input('search');
-    $user_id = Auth::id();
+    $userId = Auth::id();
 
-    $results = Task::where('user_id', $user_id)
+    // Search results
+    $results = Task::where('user_id', $userId)
                    ->where('title', 'like', "%{$search}%")
                    ->get();
 
-    $hashtags = Hashtag::where("user_id", $user_id)->get();
+    $hashtags = Hashtag::where('user_id', $userId)->get();
 
-    return view('tasks.index', compact('results', 'hashtags'))
-           ->with('tasks', [])    // hide default tasks
-           ->with('search', $search);
+    // Keep pagination for main list
+    $tasks = Task::where('user_id', $userId)
+                 ->orderBy('created_at', 'desc')
+                 ->paginate(10);
+
+    return view('tasks.index', [
+        'tasks'    => $tasks,
+        'allTasks' => null,
+        'hashtags' => $hashtags,
+        'comments' => [],
+        'results'  => $results,
+        'search'   => $search,
+    ]);
 }
+
 
 
 }

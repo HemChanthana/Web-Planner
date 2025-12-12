@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
+
+
+
+    // Used for displaying user dashboard for admin i
     public function index()
     {
         $userId = auth()->id();

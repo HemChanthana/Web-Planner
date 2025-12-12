@@ -1,5 +1,6 @@
-<div x-data="{ open: false }" class="border shadow-sm rounded-2xl bg-[#F6F7FB] p-4 
-            w-48 h-48 flex flex-col justify-between">
+<div  x-data="{ open: false }" 
+    class="bg-blue-100 p-4 rounded-2xl shadow-sm w-full h-full flex flex-col justify-between "
+           >
 
     {{-- CARD PREVIEW --}}
     <h3 class="text-xl font-semibold mb-2">{{ $task->title }}</h3>
@@ -10,7 +11,13 @@
         Read More
     </button>
 
-    {{-- MODAL --}}
+
+
+
+
+
+
+  <!-- MODAL -->    
     <div x-show="open"
          x-transition.opacity
          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
