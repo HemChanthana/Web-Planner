@@ -1,17 +1,24 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "My First API",
-        "version": "0.1"
+        "title": "Web Planner API",
+        "description": "API documentation for Web Planner",
+        "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Local API Server"
+        }
+    ],
     "paths": {
-        "/login": {
+        "/api/login": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "User login",
-                "operationId": "67d6d0fdd54fba132e1b6f55ca254183",
+                "operationId": "222b2625838e3c57e017987f73598fda",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -46,13 +53,13 @@
                 }
             }
         },
-        "/register": {
+        "/api/register": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Register new user",
-                "operationId": "5d4fa5d5607ed675ba93907e1fc94534",
+                "operationId": "8e4e3cb7b46126f4696379d3c7eeb4ad",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -97,13 +104,13 @@
                 }
             }
         },
-        "/profile": {
+        "/api/profile": {
             "get": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Get logged-in user profile",
-                "operationId": "2c21d15f399373a0c224a8064ee8ae40",
+                "operationId": "94a5f4c5f5e5755cf43698cf9bc49e9d",
                 "responses": {
                     "200": {
                         "description": "Profile data"
@@ -111,18 +118,18 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "sanctum": []
                     }
                 ]
             }
         },
-        "/users": {
+        "/api/users": {
             "get": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Get all users (Admin only)",
-                "operationId": "bb45a7ecef64e9b03774c45fd8912080",
+                "operationId": "6ab80e1d0649fe5786bbd88e91df9b40",
                 "responses": {
                     "200": {
                         "description": "Users list"
@@ -133,18 +140,18 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "sanctum": []
                     }
                 ]
             }
         },
-        "/user/update": {
+        "/api/user/update": {
             "put": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Update logged-in user",
-                "operationId": "9312924d59c6da6041cc3acc7ac99ce6",
+                "operationId": "07bbcfc26d43f138d6c02e1061afed52",
                 "responses": {
                     "200": {
                         "description": "User updated"
@@ -152,18 +159,18 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "sanctum": []
                     }
                 ]
             }
         },
-        "/users/{id}": {
+        "/api/users/{id}": {
             "delete": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Delete user (Admin only)",
-                "operationId": "6c2134224e75d87a372ff151f33dd7e5",
+                "operationId": "acec8ccca5ea84cb36908a363355b412",
                 "parameters": [
                     {
                         "name": "id",
@@ -181,9 +188,306 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "sanctum": []
                     }
                 ]
+            }
+        },
+        "/tasks": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Get list of tasks",
+                "operationId": "7786da811325606208249ebc8d393d9a",
+                "responses": {
+                    "200": {
+                        "description": "List of tasks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Task"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Create a new task",
+                "operationId": "a737e990cef5769592bc41ee6a62f7f1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "priority"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Finish assignment"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Complete Swagger documentation"
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Low",
+                                            "Normal",
+                                            "High"
+                                        ],
+                                        "example": "High"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-01-10"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Task created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Task"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/tasks/{id}": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Get a single task",
+                "operationId": "dd21301b6ef0425f2260a34eac9679c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Task details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Task"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Update a task",
+                "operationId": "2a0a8c212f84263f9a249469557b2539",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "priority",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Low",
+                                            "Normal",
+                                            "High"
+                                        ]
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pending",
+                                            "in-progress",
+                                            "done"
+                                        ]
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Task updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Task"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Delete a task",
+                "operationId": "a2d3ec140e69f8b97ce812eadbe932ac",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Task deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Task": {
+                "title": "Task",
+                "required": [
+                    "id",
+                    "title",
+                    "priority",
+                    "status"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Finish assignment"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Complete Swagger documentation"
+                    },
+                    "priority": {
+                        "type": "string",
+                        "enum": [
+                            "Low",
+                            "Normal",
+                            "High"
+                        ],
+                        "example": "High"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "in-progress",
+                            "done"
+                        ],
+                        "example": "pending"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-01-10"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     },
@@ -199,6 +503,10 @@
         {
             "name": "Admin",
             "description": "Admin"
+        },
+        {
+            "name": "Tasks",
+            "description": "Tasks"
         }
     ]
 }

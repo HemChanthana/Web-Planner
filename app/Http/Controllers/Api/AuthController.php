@@ -13,7 +13,7 @@ class AuthController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/login",
+     *     path="/api/login",
      *     summary="User login",
      *     tags={"Auth"},
      *     @OA\RequestBody(
@@ -35,7 +35,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (! Auth::attempt($request->only('email', 'password'))) {
+        if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
@@ -50,7 +50,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/register",
+     *     path="/api/register",
      *     summary="Register new user",
      *     tags={"Auth"},
      *     @OA\RequestBody(
@@ -91,26 +91,24 @@ class AuthController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/profile",
+     *     path="/api/profile",
      *     summary="Get logged-in user profile",
      *     tags={"User"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"sanctum":{}}},
      *     @OA\Response(response=200, description="Profile data")
      * )
      */
     public function profile(Request $request)
     {
-        return response()->json([
-            'user' => $request->user(),
-        ]);
+        return response()->json(['user' => $request->user()]);
     }
 
     /**
      * @OA\Get(
-     *     path="/users",
+     *     path="/api/users",
      *     summary="Get all users (Admin only)",
      *     tags={"Admin"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"sanctum":{}}},
      *     @OA\Response(response=200, description="Users list"),
      *     @OA\Response(response=403, description="Forbidden")
      * )
@@ -121,17 +119,15 @@ class AuthController extends Controller
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        return response()->json([
-            'users' => User::all(),
-        ]);
+        return response()->json(['users' => User::all()]);
     }
 
     /**
      * @OA\Put(
-     *     path="/user/update",
+     *     path="/api/user/update",
      *     summary="Update logged-in user",
      *     tags={"User"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"sanctum":{}}},
      *     @OA\Response(response=200, description="User updated")
      * )
      */
@@ -157,18 +153,15 @@ class AuthController extends Controller
                 : $user->password,
         ]);
 
-        return response()->json([
-            'message' => 'Updated',
-            'user'    => $user,
-        ]);
+        return response()->json(['message' => 'Updated', 'user' => $user]);
     }
 
     /**
      * @OA\Delete(
-     *     path="/users/{id}",
+     *     path="/api/users/{id}",
      *     summary="Delete user (Admin only)",
      *     tags={"Admin"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"sanctum":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
